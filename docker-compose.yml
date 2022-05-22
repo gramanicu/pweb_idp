@@ -1,8 +1,6 @@
-version: "2"
+version: "3"
 
 services:
-
-
 
     pweb-db:
         container_name: "mysql"
@@ -16,10 +14,8 @@ services:
             - pweb-database-network
 
 
-
-
     pweb_frontend:
-        build: pweb_frontend-master
+        image: fe
         container_name: "pweb_frontend"
         ports:
             - 3000:3000
@@ -30,7 +26,7 @@ services:
 
 
     pweb_backend:
-        build: pweb_backend-master
+        image: be
         container_name: "pweb_backend"
         command: "node server.js"
         restart: on-failure
@@ -45,7 +41,7 @@ services:
             - rabbitmq
 
     pweb_backend_email:
-        build: pweb_backend-master
+        image: be
         container_name: "email"
         command: "node jobs/emailJob.js"
         restart: on-failure

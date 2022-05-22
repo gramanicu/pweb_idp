@@ -1,0 +1,19 @@
+_format_version: "2.1"
+
+services:
+
+  - name: r-backend-docs
+    url: http://pweb_backend:3001/api-docs
+    routes:
+      - name: backend-docs
+        paths: 
+          - /api-docs
+
+  - name: frontend
+    url: http://pweb_frontend:3000/
+    routes:
+      - name: frontend-path
+        paths: 
+          - /
+plugins:
+  - name: prometheus

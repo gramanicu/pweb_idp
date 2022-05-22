@@ -4,7 +4,7 @@ EXPOSE 3001
 EXPOSE 3306
 
 WORKDIR /usr/src/pweb_backend
-COPY . ./
+COPY ./pweb_backend-master1 ./
 RUN npm install -D
 
-
+CMD ["node", "jobs/emailJob.js"]

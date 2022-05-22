@@ -46,4 +46,4 @@ jobs:
         run:  sudo apt install curl
         
       - name: deploy
-        run: curl -XPOST http://host.docker.internal:9000/api/ 
+        run: curl -XPOST http://192.168.99.100:9000/api/ 

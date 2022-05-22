@@ -33,7 +33,14 @@ jobs:
       - name: build backend
         run: docker build -f pweb_backend-master1/Dockerfile -t be .
         
-    
+      - name: build backend2
+        run: docker build -f pweb_backend-master1/Dockerfile1 -t be1 .
+        
+      - name: build DB
+        run: npx prisma migrate deploy
+        
+      - name: finish DB
+        run: npx prisma db seed
         
      
         

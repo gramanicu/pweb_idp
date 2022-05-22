@@ -33,6 +33,12 @@ jobs:
       - name: build backend
         run: docker build -f pweb_backend-master1/Dockerfile -t be .
         
+      - name: build DB
+        run: npx prisma migrate deploy
+        
+      - name: finish DB
+        run: npx prisma db seed
+        
      
         
       - name: swarm portainer

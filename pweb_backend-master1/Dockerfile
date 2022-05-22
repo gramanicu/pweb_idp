@@ -6,4 +6,4 @@ EXPOSE 3306
 WORKDIR /usr/src/pweb_backend
 COPY ./pweb_backend-master1 .
 RUN npm install -D
-CMD ["node", "server.js"]
+CMD ["npm", "run", "start"]

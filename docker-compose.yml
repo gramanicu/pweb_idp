@@ -28,7 +28,7 @@ services:
     pweb_backend:
         image: be
         container_name: "pweb_backend"
-        command: "node server.js"
+        
         restart: on-failure
         ports:
             - 3001:3001
@@ -41,9 +41,9 @@ services:
             - rabbitmq
 
     pweb_backend_email:
-        image: be
+        image: be1
         container_name: "email"
-        command: "node jobs/emailJob.js"
+       
         restart: on-failure
         networks:
             - rmq_email

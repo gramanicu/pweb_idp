@@ -9,7 +9,6 @@ services:
             - 3000:3000
         networks:
             - internal-frontend-backend-network
-            - rmq 
         depends_on:
             - pweb_backend
             
@@ -45,9 +44,38 @@ services:
 
         networks:
             - pweb-database-network
-            - rmq
-            - database-admin
+    kong:
+        image: kong:latest
+        volumes:
+            - ./Kong:/usr/local/kong/declarative
+        environment:
+            KONG_DATABASE: 'off'
+            KONG_DECLARATIVE_CONFIG: /usr/local/kong/declarative/kong.yml
+            KONG_PROXY_ACCESS_LOG: /dev/stdout
+            KONG_ADMIN_ACCESS_LOG: /dev/stdout
+            KONG_PROXY_ERROR_LOG: /dev/stderr
+            KONG_ADMIN_ERROR_LOG: /dev/stderr
+            KONG_ADMIN_LISTEN: 0.0.0.0:8001, 0.0.0.0:8444 ssl
+        ports:
+            - 80:8000
+            - 443:8443
+            - 8001:8001
+            - 8444:8444
+        deploy:
+            placement:
+                constraints: [node.role == manager]
+        networks:
+            - internal-frontend-backend-network
+            - logging
 
+    prometheus:
+      image: prom/prometheus
+      volumes:
+        - ./prometheus/config.yml:/etc/prometheus/prometheus.yml
+      ports:
+        - 9090:9090
+      networks:
+        - logging
 
 
 
@@ -56,6 +84,5 @@ networks:
     pweb-database-network:
     rmq:
     database-admin:
-    internal:
     logging:
     

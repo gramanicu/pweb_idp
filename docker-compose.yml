@@ -1,49 +1,73 @@
-version: "3.2"
+version: "2"
 
 services:
+
+
+
+    pweb-db:
+        container_name: "mysql"
+        image: mysql:5.7
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_ROOT_PASSWORD: "password"
+            MYSQL_DATABASE: "prisma"
+        networks:
+            - pweb-database-network
+
+
+
+
     pweb_frontend:
-        
-        image: fe
-        container_name: pweb_frontend
+        build: pweb_frontend-master
+        container_name: "pweb_frontend"
         ports:
             - 3000:3000
         networks:
             - internal-frontend-backend-network
         depends_on:
             - pweb_backend
-            
 
 
     pweb_backend:
-        
-        image: be
-        container_name: pweb_backend
-
+        build: pweb_backend-master
+        container_name: "pweb_backend"
+        command: "node server.js"
+        restart: on-failure
         ports:
             - 3001:3001
         networks:
             - internal-frontend-backend-network
             - pweb-database-network
-            - rmq
+            - rmq_backend
         depends_on:
-            - mysql
-            
-        
+            - pweb-db
+            - rabbitmq
 
-   
-
-    mysql:
-        image: mysql
-        container_name: mysql
-        restart: always
-
-        ports:
-            - 3306:3306
-        environment:
-            MYSQL_ROOT_PASSWORD: "password"
-
+    pweb_backend_email:
+        build: pweb_backend-master
+        container_name: "email"
+        command: "node jobs/emailJob.js"
+        restart: on-failure
         networks:
-            - pweb-database-network
+            - rmq_email
+        depends_on:
+            - rabbitmq
+
+    
+
+    rabbitmq:
+        image: rabbitmq:management-alpine
+        container_name: "rabbitmq"
+        ports:
+            - 5672:5672
+            - 15672:15672
+        networks:
+            - rmq_backend
+            - rmq_email
+            - logging
+        hostname: rabbitmq
+
     kong:
         image: kong:latest
         volumes:
@@ -68,6 +92,15 @@ services:
             - internal-frontend-backend-network
             - logging
 
+    grafana:
+      image: grafana/grafana:latest
+      volumes:
+        - ./grafana/data:/var/lib/grafana
+      ports:
+        - 3002:3000
+      networks:
+        - logging
+    
     prometheus:
       image: prom/prometheus
       volumes:
@@ -78,11 +111,9 @@ services:
         - logging
 
 
-
 networks:
     internal-frontend-backend-network:
     pweb-database-network:
-    rmq:
-    database-admin:
+    rmq_backend:
+    rmq_email:
     logging:
-    

@@ -1,0 +1,61 @@
+version: "3.2"
+
+services:
+    pweb_frontend:
+        
+        image: fe
+        container_name: pweb_frontend
+        ports:
+            - 3000:3000
+        networks:
+            - internal-frontend-backend-network
+            - rmq 
+        depends_on:
+            - pweb_backend
+            
+
+
+    pweb_backend:
+        
+        image: be
+        container_name: pweb_backend
+
+        ports:
+            - 3001:3001
+        networks:
+            - internal-frontend-backend-network
+            - pweb-database-network
+            - rmq
+        depends_on:
+            - mysql
+            
+        
+
+   
+
+    mysql:
+        image: mysql
+        container_name: mysql
+        restart: always
+
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_ROOT_PASSWORD: "password"
+
+        networks:
+            - pweb-database-network
+            - rmq
+            - database-admin
+
+
+
+
+networks:
+    internal-frontend-backend-network:
+    pweb-database-network:
+    rmq:
+    database-admin:
+    internal:
+    logging:
+    

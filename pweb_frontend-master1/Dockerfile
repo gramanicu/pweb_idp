@@ -9,3 +9,5 @@ COPY ./pweb_frontend-master1 .
 RUN npm install -D
 
 RUN npm run build
+
+CMD ["npm", "run", "preview:lan"]
